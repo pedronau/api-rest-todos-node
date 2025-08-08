@@ -18,9 +18,11 @@ export class TodoController {
 
     const todoById = todos.find((todo) => todo.id === id);
 
-    todoById
-      ? res.json(todoById)
-      : res.status(404).json({ error: `Tarea con ID ${id} no encontrado` });
+    if (todoById) {
+      res.json(todoById);
+    } else {
+      res.status(404).json({ error: `Tarea con ID ${id} no encontrado` });
+    }
   };
 
   public getTodoByCompleted = (req: Request, res: Response) => {
