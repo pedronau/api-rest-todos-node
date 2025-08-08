@@ -1,4 +1,11 @@
-export const todos = [
+interface ToDo {
+  id: number;
+  tarea: string;
+  completado: boolean;
+  fechaDeCreacion: Date;
+}
+
+export const todos: ToDo[] = [
   {
     id: 1,
     tarea: "Comprar pan en la panadería",

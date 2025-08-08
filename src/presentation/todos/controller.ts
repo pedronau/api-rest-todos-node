@@ -36,11 +36,9 @@ export class TodoController {
   public createTodo = (req: Request, res: Response) => {
     const { tarea, completado } = req.body;
     if (!tarea || !completado) {
-      return res
-        .status(405)
-        .json({
-          error: "Tanto la tarea como el estado (completada) son obligatorios.",
-        });
+      return res.status(405).json({
+        error: "Tanto la tarea como el estado (completada) son obligatorios.",
+      });
     }
 
     const newTodo = {
@@ -52,5 +50,52 @@ export class TodoController {
     todos.push(newTodo);
 
     return res.status(200).json(newTodo);
+  };
+
+  public updateTodo = (req: Request, res: Response) => {
+    const { id } = req.params;
+    const idNumber = Number(id)
+    const { tarea, completado } = req.body;
+    console.log(completado, "true", true);
+    let completadoBoolean: boolean = false;
+
+    if (isNaN(idNumber)) {
+      return res
+        .status(405)
+        .json({ error: `El argumento ID no es un número válido` });
+    }
+
+    if (!tarea) {
+      return res
+        .status(400)
+        .json({ error: `El parámetro tarea es obligatorio.` });
+    }
+
+    if (completado === "true") {
+      completadoBoolean = true;
+    } else if (completado === "false") {
+      completadoBoolean = false;
+    } else {
+      return res.status(400).json({
+        error: `El parámetro 'completado' debe ser true o false y además es obligatorio.`,
+      });
+    }
+
+    let todo = todos.find((todo) => todo.id === Number(id));
+    const todoIndex = todos.findIndex((todo) => todo.id === Number(id));
+    if (!todo) {
+      res.status(400).json({ error: "No se ha encontado la tarea" });
+    }
+
+    todo = {
+      id: todo!.id,
+      tarea: tarea || todo!.tarea,
+      completado: completadoBoolean || todo!.completado,
+      fechaDeCreacion: new Date(),
+    };
+
+    todos[todoIndex] = todo;
+
+    res.json(todo);
   };
 }
