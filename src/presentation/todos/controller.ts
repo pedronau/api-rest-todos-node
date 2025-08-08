@@ -34,6 +34,23 @@ export class TodoController {
   };
 
   public createTodo = (req: Request, res: Response) => {
-    return res.json(todos);
+    const { tarea, completado } = req.body;
+    if (!tarea || !completado) {
+      return res
+        .status(405)
+        .json({
+          error: "Tanto la tarea como el estado (completada) son obligatorios.",
+        });
+    }
+
+    const newTodo = {
+      id: todos.length + 1,
+      tarea: tarea,
+      completado: completado,
+      fechaDeCreacion: new Date(),
+    };
+    todos.push(newTodo);
+
+    return res.status(200).json(newTodo);
   };
 }
