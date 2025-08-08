@@ -20,7 +20,7 @@ export class TodoController {
 
     todoById
       ? res.json(todoById)
-      : res.status(404).json({ error: `Todo con ID ${id} no encontrado` });
+      : res.status(404).json({ error: `Tarea con ID ${id} no encontrado` });
   };
 
   public getTodoByCompleted = (req: Request, res: Response) => {
@@ -54,7 +54,7 @@ export class TodoController {
 
   public updateTodo = (req: Request, res: Response) => {
     const { id } = req.params;
-    const idNumber = Number(id)
+    const idNumber = Number(id);
     const { tarea, completado } = req.body;
     console.log(completado, "true", true);
     let completadoBoolean: boolean = false;
@@ -97,5 +97,25 @@ export class TodoController {
     todos[todoIndex] = todo;
 
     res.json(todo);
+  };
+
+  public deleteTodo = (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    if (isNaN(id) || !id) {
+      return res
+        .status(405)
+        .json({ error: `El argumento ID no es un número válido` });
+    }
+
+    const todoIndex = todos.findIndex((todo) => todo.id === id);
+    if (todoIndex === -1) {
+      return res
+        .status(405)
+        .json({ error: `La tarea con ID ${id} no existe.` });
+    }
+
+    todos.splice(todoIndex, 1);
+
+    return res.json(`Tarea con ID ${id} eliminada con éxito.`);
   };
 }
